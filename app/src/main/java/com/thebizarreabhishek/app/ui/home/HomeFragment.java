@@ -77,17 +77,23 @@ public class HomeFragment extends Fragment {
 
         binding.tvRepliesCount.setText(String.valueOf(count));
 
-        // Assume 2 minutes saved per reply as an estimate
-        int minutesSaved = count * 2;
-        if (minutesSaved < 60) {
-            binding.tvSavedTime.setText(minutesSaved + "m");
+        int totalWords = dbHelper.getTotalWordsCount();
+        double secondsSaved = totalWords * 1.25;
+
+        if (secondsSaved < 60) {
+            binding.tvSavedTime.setText((int) secondsSaved + "s");
         } else {
+            int minutesSaved = (int) (secondsSaved / 60);
             int hours = minutesSaved / 60;
             int mins = minutesSaved % 60;
-            if (mins == 0)
-                binding.tvSavedTime.setText(hours + "h");
-            else
-                binding.tvSavedTime.setText(hours + "h " + mins + "m");
+            if (hours > 0) {
+                if (mins > 0)
+                    binding.tvSavedTime.setText(hours + "h " + mins + "m");
+                else
+                    binding.tvSavedTime.setText(hours + "h");
+            } else {
+                binding.tvSavedTime.setText(mins + "m");
+            }
         }
     }
 

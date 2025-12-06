@@ -201,4 +201,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return (int) count;
     }
+
+    public int getTotalWordsCount() {
+        int totalWords = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT " + COLUMN_REPLY + " FROM " + TABLE_MESSAGES, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    String reply = cursor.getString(0);
+                    if (reply != null && !reply.isEmpty()) {
+                        String[] words = reply.trim().split("\\s+");
+                        totalWords += words.length;
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "getTotalWordsCount: ", e);
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return totalWords;
+    }
 }
