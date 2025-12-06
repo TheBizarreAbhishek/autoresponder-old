@@ -173,28 +173,55 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
+        <!-- Custom Prompt Section -->
         <TextView
-            android:id="@+id/tv_recent"
+            android:id="@+id/tv_prompt_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recent"
+            android:text="Bot Behavior"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_stats"/>
-            
-        <!-- Placeholder for RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-             android:id="@+id/recycler_recent"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="16dp"
-             app:layout_constraintTop_toBottomOf="@id/tv_recent"
-             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-             tools:listitem="@layout/item_log"
-             tools:itemCount="3"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Define how the bot should behave..."
+            app:boxBackgroundColor="@color/surface"
+            app:boxStrokeColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_prompt_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_custom_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="5"
+                android:gravity="top"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/chip_background"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Behavior"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/primary"
+            app:cornerRadius="24dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/input_layout_prompt"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -32,13 +32,18 @@ public class GeminiReplyGenerator {
     private final String aiReplyLanguage;
     private final String botName;
 
-    public GeminiReplyGenerator(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
+    private final String customPrompt;
+
+    public GeminiReplyGenerator(Context context, SharedPreferences sharedPreferences,
+            WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
         API_KEY = sharedPreferences.getString("api_key", "not-set").trim();
         LLM_MODEL = sharedPreferences.getString("llm_model", "gemini-1.5-flash");
-        defaultReplyMessage = sharedPreferences.getString("default_reply_message", context.getString(R.string.default_bot_message));
+        defaultReplyMessage = sharedPreferences.getString("default_reply_message",
+                context.getString(R.string.default_bot_message));
         aiReplyLanguage = sharedPreferences.getString("ai_reply_language", "English");
         botName = sharedPreferences.getString("bot_name", "Yuji");
+        customPrompt = sharedPreferences.getString("custom_prompt", "");
     }
 
     public void generateReply(String sender, String message, CustomReplyGenerator.OnReplyGeneratedListener listener) {
@@ -75,13 +80,16 @@ public class GeminiReplyGenerator {
         });
     }
 
-//    ----------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------
 
     private @NonNull StringBuilder buildPrompt(String sender, String message, StringBuilder chatHistory) {
 
         StringBuilder prompt = new StringBuilder();
 
-        if (!chatHistory.toString().isEmpty()) {
+        if (customPrompt != null && !customPrompt.isEmpty()) {
+            prompt.append(customPrompt);
+            prompt.append("\n\nMake sure to reply in ").append(aiReplyLanguage).append(".");
+        } else {
             prompt.append("You are a WhatsApp auto-reply bot named ").append(botName);
             prompt.append(" who pretends to be human and doesn't disclose that you are a bot.");
             prompt.append(" Give appropriate replies according to the latest message and the previous chat history.");
@@ -89,24 +97,20 @@ public class GeminiReplyGenerator {
             prompt.append(" Always reply in ").append(aiReplyLanguage).append(".");
             prompt.append(" Reply within 1 or 2 sentences whenever possible.");
             prompt.append(" Be polite, context-aware, and ensure your replies are relevant to the conversation.");
-            prompt.append("\n\n\nMost recent message (from ");
-            prompt.append(sender).append("): ");
-            prompt.append(message);
-            prompt.append("\n\n\nPrevious chat history: \n").append(chatHistory);
-            return prompt;
         }
 
-        prompt.append("You are a WhatsApp auto-reply bot named ").append(botName);
-        prompt.append("Your task is replying to the incoming message. ");
-        prompt.append("Always reply in ").append(aiReplyLanguage);
-        prompt.append(". Be polite, context-aware, and ensure your replies are relevant to the conversation.\n\n");
-        prompt.append("\n\n\nIncoming message (from ");
+        if (!chatHistory.toString().isEmpty()) {
+            prompt.append("\n\n\nPrevious chat history: \n").append(chatHistory);
+        }
+
+        prompt.append("\n\n\nMost recent message (from ");
         prompt.append(sender).append("): ");
         prompt.append(message);
+
         return prompt;
     }
 
-//    ----------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------
 
     private @NonNull StringBuilder getChatHistory(List<Message> messages) {
 
@@ -132,5 +136,5 @@ public class GeminiReplyGenerator {
         return chatHistory;
     }
 
-//    ----------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------
 }

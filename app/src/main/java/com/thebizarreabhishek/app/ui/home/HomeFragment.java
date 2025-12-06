@@ -27,7 +27,20 @@ public class HomeFragment extends Fragment {
         super.onResume();
         updateServiceStatus();
         loadStats();
-        loadRecentActivity();
+        loadCustomPrompt();
+    }
+
+    private void loadCustomPrompt() {
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+        String savedPrompt = prefs.getString("custom_prompt", "You are a helpful AI assistant.");
+        binding.etCustomPrompt.setText(savedPrompt);
+
+        binding.btnSavePrompt.setOnClickListener(v -> {
+            String newPrompt = binding.etCustomPrompt.getText().toString();
+            prefs.edit().putString("custom_prompt", newPrompt).apply();
+            android.widget.Toast.makeText(requireContext(), "Behavior Saved!", android.widget.Toast.LENGTH_SHORT)
+                    .show();
+        });
     }
 
     private void loadStats() {
@@ -49,24 +62,6 @@ public class HomeFragment extends Fragment {
             else
                 binding.tvSavedTime.setText(hours + "h " + mins + "m");
         }
-    }
-
-    private void loadRecentActivity() {
-        com.thebizarreabhishek.app.helpers.DatabaseHelper dbHelper = new com.thebizarreabhishek.app.helpers.DatabaseHelper(
-                requireContext());
-        // Simple implementation: Use LogsAdapter for recent list too, or create a
-        // simplified one
-        // For now, let's reuse LogsAdapter logic but limited to 3 items
-        com.thebizarreabhishek.app.ui.logs.LogsAdapter adapter = new com.thebizarreabhishek.app.ui.logs.LogsAdapter();
-        binding.recyclerRecent.setAdapter(adapter);
-
-        // We need a getRecentMessages() in DB helper that limits to 3.
-        // For now, let's just get all and sublist (inefficient but works for small
-        // data)
-        // Or even better, let's just leave it empty if complicated, but User complained
-        // about "Fake data"
-        // The user didn't complain about "Recent" list yet, only stats.
-        // I'll stick to fixing stats first.
     }
 
     private void updateServiceStatus() {
