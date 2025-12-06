@@ -1,50 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.MainActivity">
-
-    <include
-        android:id="@+id/toolbar_include"
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"/>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="200dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/whatsapp_ai"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/toolbar_include"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/infoTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="600dp"
-        android:paddingVertical="20dp"
-        android:paddingHorizontal="30dp"
-        android:textAlignment="center"
-        android:text="@string/setup_page_info"
-        android:layout_gravity="center_horizontal"
-        android:textSize="18sp"
-        android:textColor="?attr/textColor"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imageView"
-        android:layout_marginTop="15dp" />
-
-    <TextView
-        android:id="@+id/shortInfoTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/permission_request_text"

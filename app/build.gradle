@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'zo.ro.whatsappreplybot'
+    namespace 'com.thebizarreabhishek.app'
     compileSdk 34
 
     defaultConfig {
-        applicationId "zo.ro.whatsappreplybot"
+        applicationId "com.thebizarreabhishek.app"
         minSdk 24
         //noinspection OldTargetApi
         targetSdk 34
@@ -49,4 +49,6 @@ dependencies {
     implementation(libs.generativeai)
     implementation(libs.guava)
     implementation(libs.reactive.streams)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
 }

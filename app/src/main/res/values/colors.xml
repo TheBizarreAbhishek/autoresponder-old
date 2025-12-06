@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#FF888888</color>
-    <color name="red">#FFFF0000</color>
-    <color name="green">#FF00FF00</color>
-    <color name="blue">#FF0000FF</color>
-    <color name="yellow">#FFFFEB3B</color>
-    <color name="orange">#FFFF9800</color>
-    <color name="purple">#FF9C27B0</color>
-    <color name="pink">#FFFF485F</color>
-    <color name="brown">#FF795548</color>
-    <color name="teal">#FF008080</color>
-    <color name="teal_lighter">#059F9F</color>
-    <color name="cyan">#FF00FFFF</color>
-    <color name="lime">#FF00FF00</color>
-    <color name="grey">#FF808080</color>
-    <color name="indigo">#FF4B0082</color>
-    <color name="deep_orange">#FFFF7043</color>
-    <color name="amber">#FFFFC107</color>
-    <color name="light_green">#FF9CCC65</color>
-    <color name="light_blue">#FF80D8FF</color>
-    <color name="deep_purple">#FF673AB7</color>
-    <color name="dark_green">#007E05</color>
+    <!-- Primary Brand Colors -->
+    <color name="primary">#2563EB</color> <!-- Bright Royal Blue -->
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#DBEAFE</color>
+    <color name="on_primary_container">#1E3A8A</color>
+
+    <!-- Secondary Colors (Teal/Green accents) -->
+    <color name="secondary">#0D9488</color> <!-- Teal 600 -->
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#CCFBF1</color>
+    <color name="on_secondary_container">#115E59</color>
+
+    <!-- Backgrounds -->
+    <color name="background">#F8FAFC</color> <!-- Slate 50 -->
+    <color name="on_background">#0F172A</color> <!-- Slate 900 -->
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#0F172A</color>
+    <color name="surface_variant">#F1F5F9</color> <!-- Slate 100 -->
+    <color name="on_surface_variant">#475569</color> <!-- Slate 600 -->
+
+    <!-- Status Colors -->
+    <color name="success">#22C55E</color>
+    <color name="error">#EF4444</color>
+    
+    <!-- Gradients -->
+    <color name="gradient_start">#3B82F6</color>
+    <color name="gradient_end">#10B981</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1E293B</color>
+    <color name="text_secondary">#64748B</color>
+    
+    <!-- Other -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="purple_500">#6200EE</color> <!-- Keeping legacy just in case -->
 </resources>
