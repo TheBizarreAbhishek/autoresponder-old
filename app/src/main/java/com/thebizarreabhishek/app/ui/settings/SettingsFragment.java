@@ -139,6 +139,18 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setupAIEngine() {
+        // Enable AI Switch
+        boolean isAiEnabled = prefs.getBoolean("is_ai_reply_enabled", false);
+        binding.switchAiReply.setChecked(isAiEnabled);
+        binding.switchAiReply.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean("is_ai_reply_enabled", isChecked).apply();
+            if (isChecked && prefs.getString("api_key", "").isEmpty()) {
+                android.widget.Toast
+                        .makeText(requireContext(), "Please set your API Key first", android.widget.Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+
         String currentModel = prefs.getString("llm_model", "gpt-4o");
 
         // Find display name for current model
