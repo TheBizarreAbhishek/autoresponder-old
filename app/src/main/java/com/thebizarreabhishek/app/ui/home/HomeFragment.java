@@ -46,6 +46,15 @@ public class HomeFragment extends Fragment {
 
     private void loadCustomPrompt() {
         binding.cardCustomPrompt.setOnClickListener(v -> showCustomPromptPopup());
+
+        binding.tvFooter.setOnClickListener(v -> {
+            try {
+                startActivity(
+                        new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/TheBizarreAbhishek")));
+            } catch (Exception e) {
+                // Ignore
+            }
+        });
     }
 
     private void showEditTextDialog(String title, String key, String currentValue, android.widget.TextView updateView) {
