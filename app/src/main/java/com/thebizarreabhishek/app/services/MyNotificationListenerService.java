@@ -45,6 +45,9 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
         if (packageName.equalsIgnoreCase("com.whatsapp") && sharedPreferences.getBoolean("is_whatsapp_enabled", true))
             isSupported = true;
+        else if (packageName.equalsIgnoreCase("com.whatsapp.w4b")
+                && sharedPreferences.getBoolean("is_whatsapp_business_enabled", false))
+            isSupported = true;
         else if (packageName.equals("org.telegram.messenger")
                 && sharedPreferences.getBoolean("is_telegram_enabled", false))
             isSupported = true;

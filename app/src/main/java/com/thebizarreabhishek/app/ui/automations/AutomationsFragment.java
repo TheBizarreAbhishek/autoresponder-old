@@ -28,6 +28,9 @@ public class AutomationsFragment extends Fragment {
         // WhatsApp (Default True)
         setupToggle(prefs, binding.switchWhatsapp, "is_whatsapp_enabled", true);
 
+        // WhatsApp Business
+        setupToggle(prefs, binding.switchWhatsappBusiness, "is_whatsapp_business_enabled", false);
+
         // Telegram
         setupToggle(prefs, binding.switchTelegram, "is_telegram_enabled", false);
 
