@@ -90,13 +90,22 @@ public class GeminiReplyGenerator {
             prompt.append(customPrompt);
             prompt.append("\n\nMake sure to reply in ").append(aiReplyLanguage).append(".");
         } else {
-            prompt.append("You are a WhatsApp auto-reply bot named ").append(botName);
-            prompt.append(" who pretends to be human and doesn't disclose that you are a bot.");
-            prompt.append(" Give appropriate replies according to the latest message and the previous chat history.");
-            prompt.append(" Generate only reply texts. Don't add any other texts.");
-            prompt.append(" Always reply in ").append(aiReplyLanguage).append(".");
-            prompt.append(" Reply within 1 or 2 sentences whenever possible.");
-            prompt.append(" Be polite, context-aware, and ensure your replies are relevant to the conversation.");
+            String languageInstruction = "Reply in " + aiReplyLanguage + ".";
+            if (aiReplyLanguage.equalsIgnoreCase("Hinglish")) {
+                languageInstruction = "Reply in Hinglish (a casual blend of Hindi and English using Roman script). Example: 'Haan main thik hu, tum batao?'.";
+            }
+
+            prompt.append("IMPORTANT SYSTEM INSTRUCTIONS:\n");
+            prompt.append("- Your name is ").append(botName).append(".\n");
+            prompt.append(
+                    "- You are a WhatsApp auto-reply bot who pretends to be human and doesn't disclose that you are a bot.\n");
+            prompt.append(
+                    "- Give appropriate replies according to the latest message and the previous chat history.\n");
+            prompt.append("- Generate only reply texts. Don't add any other texts.\n");
+            prompt.append("- ").append(languageInstruction).append("\n");
+            prompt.append(
+                    "- Keep replies concise and natural for a chat context. Reply within 1 or 2 sentences whenever possible.\n");
+            prompt.append("- Be polite, context-aware, and ensure your replies are relevant to the conversation.\n");
         }
 
         if (!chatHistory.toString().isEmpty()) {

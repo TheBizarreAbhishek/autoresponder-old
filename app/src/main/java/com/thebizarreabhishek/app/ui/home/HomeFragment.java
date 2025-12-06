@@ -29,6 +29,7 @@ public class HomeFragment extends Fragment {
         loadStats();
         loadCustomPrompt();
         loadNaturalDelayStatus();
+        loadBotIdentity();
     }
 
     private void loadNaturalDelayStatus() {
@@ -43,6 +44,59 @@ public class HomeFragment extends Fragment {
 
     private void loadCustomPrompt() {
         binding.cardCustomPrompt.setOnClickListener(v -> showCustomPromptPopup());
+    }
+
+    private void loadBotIdentity() {
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+
+        // Bot Name
+        String botName = prefs.getString("bot_name", "Abhishek Babu");
+        binding.tvBotNameValue.setText(botName);
+        binding.cardBotName
+                .setOnClickListener(v -> showEditTextDialog("Bot Name", "bot_name", botName, binding.tvBotNameValue));
+
+        // Bot Language
+        String language = prefs.getString("bot_language", "English");
+        int chipId = com.thebizarreabhishek.app.R.id.chip_english;
+        if (language.equals("Hindi"))
+            chipId = com.thebizarreabhishek.app.R.id.chip_hindi;
+        else if (language.equals("Hinglish"))
+            chipId = com.thebizarreabhishek.app.R.id.chip_hinglish;
+
+        binding.chipGroupLanguage.check(chipId);
+
+        binding.chipGroupLanguage.setOnCheckedChangeListener((group, checkedId) -> {
+            String selectedLang = "English";
+            if (checkedId == com.thebizarreabhishek.app.R.id.chip_hindi)
+                selectedLang = "Hindi";
+            else if (checkedId == com.thebizarreabhishek.app.R.id.chip_hinglish)
+                selectedLang = "Hinglish";
+
+            prefs.edit().putString("bot_language", selectedLang).apply();
+        });
+    }
+
+    private void showEditTextDialog(String title, String key, String currentValue, android.widget.TextView updateView) {
+        android.widget.EditText input = new android.widget.EditText(requireContext());
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        input.setText(currentValue);
+
+        new android.app.AlertDialog.Builder(requireContext())
+                .setTitle(title)
+                .setView(input)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String newValue = input.getText().toString();
+                    prefs(key, newValue); // helper
+                    if (updateView != null)
+                        updateView.setText(newValue);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void prefs(String key, String value) {
+        androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .edit().putString(key, value).apply();
     }
 
     private void showCustomPromptPopup() {
