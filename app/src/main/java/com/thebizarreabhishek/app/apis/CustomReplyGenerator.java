@@ -32,7 +32,6 @@ public class CustomReplyGenerator {
     private final String LLM_MODEL;
     private final WhatsAppMessageHandler messageHandler;
     private final String defaultReplyMessage;
-    private final String aiReplyLanguage;
 
     private final String botName;
     private final String botLanguage;
@@ -44,7 +43,7 @@ public class CustomReplyGenerator {
         LLM_MODEL = sharedPreferences.getString("llm_model", "custom-gpt-4o");
         defaultReplyMessage = sharedPreferences.getString("default_reply_message",
                 context.getString(R.string.default_bot_message));
-        aiReplyLanguage = sharedPreferences.getString("ai_reply_language", "English");
+
         botName = sharedPreferences.getString("bot_name", "Abhishek Babu");
         botLanguage = sharedPreferences.getString("bot_language", "English");
     }

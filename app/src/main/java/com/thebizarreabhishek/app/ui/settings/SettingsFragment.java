@@ -133,6 +133,40 @@ public class SettingsFragment extends Fragment {
 
         ((View) binding.tvApiKeyMasked.getParent()).setOnClickListener(v -> showEditKeyDialog());
         binding.btnToggleKeyVisibility.setOnClickListener(v -> toggleKeyVisibility());
+        binding.btnCopyKey.setOnClickListener(v -> {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) requireContext()
+                    .getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("API Key",
+                    prefs.getString("api_key", ""));
+            clipboard.setPrimaryClip(clip);
+            android.widget.Toast.makeText(requireContext(), "Copied to clipboard", android.widget.Toast.LENGTH_SHORT)
+                    .show();
+        });
+
+        setupBotIdentity();
+    }
+
+    private void setupBotIdentity() {
+        // Bot Name
+        String botName = prefs.getString("bot_name", "Abhishek Babu");
+        binding.tvBotNameSetting.setText(botName);
+        binding.containerBotName.setOnClickListener(
+                v -> showEditTextDialog("Bot Name", "bot_name", botName, binding.tvBotNameSetting));
+
+        // Bot Language
+        String currentLanguage = prefs.getString("bot_language", "English");
+        binding.tvBotLanguageSetting.setText(currentLanguage + " >");
+        binding.containerBotLanguage.setOnClickListener(v -> {
+            String[] languages = getResources().getStringArray(R.array.languages);
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Select Bot Language")
+                    .setItems(languages, (dialog, which) -> {
+                        String selectedLanguage = languages[which];
+                        binding.tvBotLanguageSetting.setText(selectedLanguage + " >");
+                        prefs.edit().putString("bot_language", selectedLanguage).apply();
+                    })
+                    .show();
+        });
     }
 
     private boolean isKeyVisible = false;

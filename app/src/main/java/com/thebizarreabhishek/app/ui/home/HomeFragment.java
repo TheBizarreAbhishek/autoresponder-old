@@ -31,7 +31,7 @@ public class HomeFragment extends Fragment {
         loadStats();
         loadCustomPrompt();
         loadNaturalDelayStatus();
-        loadBotIdentity();
+
     }
 
     private void loadNaturalDelayStatus() {
@@ -46,32 +46,6 @@ public class HomeFragment extends Fragment {
 
     private void loadCustomPrompt() {
         binding.cardCustomPrompt.setOnClickListener(v -> showCustomPromptPopup());
-    }
-
-    private void loadBotIdentity() {
-        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
-
-        // Bot Name
-        String botName = prefs.getString("bot_name", "Abhishek Babu");
-        binding.tvBotNameValue.setText(botName);
-        binding.cardBotName
-                .setOnClickListener(v -> showEditTextDialog("Bot Name", "bot_name", botName, binding.tvBotNameValue));
-
-        // Bot Language Selection
-        String currentLanguage = prefs.getString("bot_language", "English");
-        binding.chipBotLanguage.setText(currentLanguage);
-
-        binding.chipBotLanguage.setOnClickListener(v -> {
-            String[] languages = getResources().getStringArray(R.array.languages);
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Select Bot Language")
-                    .setItems(languages, (dialog, which) -> {
-                        String selectedLanguage = languages[which];
-                        binding.chipBotLanguage.setText(selectedLanguage);
-                        prefs.edit().putString("bot_language", selectedLanguage).apply();
-                    })
-                    .show();
-        });
     }
 
     private void showEditTextDialog(String title, String key, String currentValue, android.widget.TextView updateView) {
