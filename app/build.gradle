@@ -59,7 +59,7 @@ dependencies {
     implementation libs.okhttp
 
     implementation(libs.generativeai)
-    implementation(libs.guava)
+
     implementation(libs.reactive.streams)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
