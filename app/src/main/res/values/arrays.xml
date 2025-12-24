@@ -1,11 +1,10 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="llm_model_entries">
-        <item>Gemini 3.0 Pro (New - Preview)</item>
+        <item>Gemini 3 Pro (Preview)</item>
         <item>Gemini 2.5 Pro</item>
         <item>Gemini 2.5 Flash</item>
         <item>Gemini 2.5 Flash-Lite</item>
-        <item>Gemini 2.0 Flash</item>
         <item>GPT-4o</item>
         <item>GPT-4o Mini</item>
         <item>O1 Preview</item>
@@ -16,11 +15,10 @@
     </string-array>
 
     <string-array name="llm_model_values">
-        <item>gemini-3.0-pro-preview</item>
-        <item>gemini-2.5-pro-001</item>
-        <item>gemini-2.5-flash-001</item>
-        <item>gemini-2.5-flash-lite-001</item>
-        <item>gemini-2.0-flash-exp</item>
+        <item>gemini-3-pro-preview</item>
+        <item>gemini-2.5-pro</item>
+        <item>gemini-2.5-flash</item>
+        <item>gemini-2.5-flash-lite</item>
         <item>gpt-4o</item>
         <item>gpt-4o-mini</item>
         <item>o1-preview</item>
