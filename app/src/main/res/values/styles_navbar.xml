@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TransparentNavbar" parent="ThemeOverlay.Material3.DynamicColors.Dark">
+        <!-- Hide the active indicator by making its container color transparent -->
+        <item name="colorSecondaryContainer">@android:color/transparent</item>
+        <!-- Ensure text/icon colors behave as expected (though we set them manually) -->
+    </style>
+</resources>
