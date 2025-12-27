@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateServiceStatus();
-        loadStats();
+        loadAIStatus();
         loadCustomPrompt();
         loadNaturalDelayStatus();
 
@@ -105,30 +105,43 @@ public class HomeFragment extends Fragment {
         dialog.show();
     }
 
-    private void loadStats() {
-        com.thebizarreabhishek.app.helpers.DatabaseHelper dbHelper = new com.thebizarreabhishek.app.helpers.DatabaseHelper(
-                requireContext());
-        int count = dbHelper.getMessagesCount();
-
-        binding.tvRepliesCount.setText(String.valueOf(count));
-
-        int totalWords = dbHelper.getTotalWordsCount();
-        double secondsSaved = totalWords * 1.25;
-
-        if (secondsSaved < 60) {
-            binding.tvSavedTime.setText((int) secondsSaved + "s");
+    private void loadAIStatus() {
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+        
+        // Load current AI model
+        String modelId = prefs.getString("llm_model", "gemini-2.5-flash");
+        String displayName = getModelDisplayName(modelId);
+        binding.tvCurrentModel.setText(displayName);
+        
+        // Check API status
+        String apiKey = prefs.getString("api_key", "").trim();
+        if (apiKey.isEmpty() || apiKey.equals("not-set")) {
+            binding.tvApiStatus.setText("No API Key");
+            binding.tvApiStatus.setTextColor(getResources().getColor(R.color.error, null));
+            binding.ivApiStatusIcon.setColorFilter(getResources().getColor(R.color.error, null));
         } else {
-            int minutesSaved = (int) (secondsSaved / 60);
-            int hours = minutesSaved / 60;
-            int mins = minutesSaved % 60;
-            if (hours > 0) {
-                if (mins > 0)
-                    binding.tvSavedTime.setText(hours + "h " + mins + "m");
-                else
-                    binding.tvSavedTime.setText(hours + "h");
-            } else {
-                binding.tvSavedTime.setText(mins + "m");
-            }
+            // Show configured status
+            binding.tvApiStatus.setText("Configured");
+            binding.tvApiStatus.setTextColor(getResources().getColor(R.color.success, null));
+            binding.ivApiStatusIcon.setColorFilter(getResources().getColor(R.color.success, null));
+        }
+    }
+    
+    private String getModelDisplayName(String modelId) {
+        switch (modelId) {
+            case "gemini-3-pro-preview": return "Gemini 3 Pro";
+            case "gemini-3-flash-preview": return "Gemini 3 Flash";
+            case "gemini-2.5-pro": return "Gemini 2.5 Pro";
+            case "gemini-2.5-flash": return "Gemini 2.5 Flash";
+            case "gemini-2.5-flash-lite": return "Gemini 2.5 Lite";
+            case "gpt-4o": return "GPT-4o";
+            case "gpt-4o-mini": return "GPT-4o Mini";
+            case "gpt-4-turbo": return "GPT-4 Turbo";
+            case "o3-mini": return "O3 Mini";
+            case "deepseek-chat": return "DeepSeek V3";
+            case "grok-beta": return "Grok Beta";
+            case "custom-gpt-4o": return "Custom API";
+            default: return modelId;
         }
     }
 
