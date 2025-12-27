@@ -4,23 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="24dp"
     android:background="@color/surface">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Custom Prompt"
+        android:text="Custom Prompt"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Define your AI bot's personality"
+        android:textColor="#B0B0B0"
+        android:textSize="14sp"
+        android:layout_marginBottom="20dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Type your prompt here..."
-        app:boxBackgroundColor="@color/surface_variant"
+        android:hint="Enter your prompt..."
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxBackgroundColor="@color/background"
         app:boxStrokeColor="@color/primary"
         app:hintTextColor="@color/primary"
         app:boxCornerRadiusTopStart="16dp"
@@ -33,9 +42,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
-            android:minLines="5"
+            android:minLines="4"
+            android:maxLines="8"
             android:gravity="top"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

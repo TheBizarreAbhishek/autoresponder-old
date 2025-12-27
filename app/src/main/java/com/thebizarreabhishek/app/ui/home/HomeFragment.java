@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment {
         } else {
             // Show configured status
             binding.tvApiStatus.setText("Configured");
-            binding.tvApiStatus.setTextColor(getResources().getColor(R.color.success, null));
+            binding.tvApiStatus.setTextColor(getResources().getColor(R.color.white, null));
             binding.ivApiStatusIcon.setColorFilter(getResources().getColor(R.color.success, null));
         }
     }
