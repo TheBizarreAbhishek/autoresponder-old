@@ -1,28 +1,30 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="llm_model_entries">
-        <item>Gemini 3 Pro (Preview)</item>
+        <item>Gemini 3 Pro</item>
+        <item>Gemini 3 Flash</item>
         <item>Gemini 2.5 Pro</item>
         <item>Gemini 2.5 Flash</item>
         <item>Gemini 2.5 Flash-Lite</item>
         <item>GPT-4o</item>
         <item>GPT-4o Mini</item>
-        <item>O1 Preview</item>
-        <item>O1 Mini</item>
+        <item>GPT-4 Turbo</item>
+        <item>O3 Mini</item>
         <item>DeepSeek Chat (V3)</item>
         <item>Grok Beta</item>
         <item>Custom API</item>
     </string-array>
 
     <string-array name="llm_model_values">
-        <item>gemini-3-pro-preview</item>
+        <item>gemini-3-pro</item>
+        <item>gemini-3-flash</item>
         <item>gemini-2.5-pro</item>
         <item>gemini-2.5-flash</item>
         <item>gemini-2.5-flash-lite</item>
         <item>gpt-4o</item>
         <item>gpt-4o-mini</item>
-        <item>o1-preview</item>
-        <item>o1-mini</item>
+        <item>gpt-4-turbo</item>
+        <item>o3-mini</item>
         <item>deepseek-chat</item>
         <item>grok-beta</item>
         <item>custom-gpt-4o</item>
