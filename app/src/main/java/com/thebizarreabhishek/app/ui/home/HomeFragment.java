@@ -109,7 +109,8 @@ public class HomeFragment extends Fragment {
         parentLayout.addView(listContainer);
         
         // Update UI based on blocked list
-        Runnable updateList = () -> {
+        Runnable[] updateListHolder = new Runnable[1];
+        updateListHolder[0] = () -> {
             listContainer.removeAllViews();
             if (blockedList.isEmpty()) {
                 tvNoBlocked.setVisibility(View.VISIBLE);
@@ -136,7 +137,7 @@ public class HomeFragment extends Fragment {
                     btnRemove.setOnClickListener(x -> {
                         blockedList.remove(contact);
                         prefs.edit().putStringSet("blocked_contacts", new java.util.HashSet<>(blockedList)).apply();
-                        updateList.run();
+                        updateListHolder[0].run();
                     });
                     
                     itemLayout.addView(tvName);
@@ -145,7 +146,7 @@ public class HomeFragment extends Fragment {
                 }
             }
         };
-        updateList.run();
+        updateListHolder[0].run();
         
         btnAdd.setOnClickListener(v -> {
             String name = etContact.getText().toString().trim();
@@ -153,7 +154,7 @@ public class HomeFragment extends Fragment {
                 blockedList.add(name);
                 prefs.edit().putStringSet("blocked_contacts", new java.util.HashSet<>(blockedList)).apply();
                 etContact.setText("");
-                updateList.run();
+                updateListHolder[0].run();
             }
         });
 
