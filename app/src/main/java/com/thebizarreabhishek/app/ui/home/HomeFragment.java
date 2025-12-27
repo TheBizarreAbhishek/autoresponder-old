@@ -31,7 +31,7 @@ public class HomeFragment extends Fragment {
         loadAIStatus();
         loadCustomPrompt();
         loadNaturalDelayStatus();
-
+        loadPlatforms();
     }
 
     private void loadNaturalDelayStatus() {
@@ -42,6 +42,34 @@ public class HomeFragment extends Fragment {
         binding.switchNaturalDelay.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.edit().putBoolean("is_natural_delay_enabled", isChecked).apply();
         });
+    }
+
+    private void loadPlatforms() {
+        binding.cardPlatforms.setOnClickListener(v -> showPlatformsPopup());
+    }
+
+    private void showPlatformsPopup() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_platforms, null);
+        builder.setView(dialogView);
+
+        // Setup WhatsApp switch (only functional platform for now)
+        com.google.android.material.switchmaterial.SwitchMaterial switchWhatsapp = 
+                dialogView.findViewById(R.id.switch_whatsapp);
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+        boolean whatsappEnabled = prefs.getBoolean("platform_whatsapp", true);
+        switchWhatsapp.setChecked(whatsappEnabled);
+
+        switchWhatsapp.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean("platform_whatsapp", isChecked).apply();
+        });
+
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        dialog.show();
     }
 
     private void loadCustomPrompt() {
