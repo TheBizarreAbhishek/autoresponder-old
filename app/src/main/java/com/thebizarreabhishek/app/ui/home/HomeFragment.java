@@ -312,7 +312,7 @@ public class HomeFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
             WindowManager.LayoutParams attributes = window.getAttributes();
-            attributes.blurBehindRadius = 25; // Good strength blur
+            attributes.setBlurBehindRadius(25); // Good strength blur
             window.setAttributes(attributes);
         }
     }
