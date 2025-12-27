@@ -13,6 +13,9 @@ import com.thebizarreabhishek.app.databinding.FragmentHomeBinding;
 import com.thebizarreabhishek.app.helpers.NotificationHelper;
 import android.app.AlertDialog;
 import com.thebizarreabhishek.app.R;
+import android.view.WindowManager;
+import android.os.Build;
+import android.view.Window;
 
 public class HomeFragment extends Fragment {
 
@@ -66,9 +69,7 @@ public class HomeFragment extends Fragment {
         setupPlatformSwitch(dialogView, R.id.switch_twitter, "platform_twitter", false, prefs);
 
         android.app.AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
+        applyDialogStyling(dialog);
         dialog.show();
     }
 
@@ -159,9 +160,7 @@ public class HomeFragment extends Fragment {
         });
 
         android.app.AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
+        applyDialogStyling(dialog);
         dialog.show();
     }
 
@@ -223,9 +222,7 @@ public class HomeFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         android.app.AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
+        applyDialogStyling(dialog);
         dialog.show();
     }
 
@@ -301,5 +298,22 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+
+    private void applyDialogStyling(android.app.Dialog dialog) {
+        if (dialog == null || dialog.getWindow() == null) return;
+        
+        android.view.Window window = dialog.getWindow();
+        window.setBackgroundDrawableResource(R.drawable.dialog_background);
+        window.setDimAmount(0.4f); // Base dim
+        
+        // Apply Blur Effect for Android 12+ (API 31)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+            WindowManager.LayoutParams attributes = window.getAttributes();
+            attributes.blurBehindRadius = 25; // Good strength blur
+            window.setAttributes(attributes);
+        }
     }
 }
