@@ -35,8 +35,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_whatsapp"
-            app:tint="@color/primary"/>
+            android:src="@drawable/ic_whatsapp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -72,8 +71,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_telegram"
-            app:tint="#2AABEE"/>
+            android:src="@drawable/ic_telegram"/>
 
         <TextView
             android:layout_width="0dp"
@@ -111,8 +109,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_instagram"
-            app:tint="#E1306C"/>
+            android:src="@drawable/ic_instagram"/>
 
         <TextView
             android:layout_width="0dp"
@@ -150,8 +147,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_twitter"
-            app:tint="@color/white"/>
+            android:src="@drawable/ic_twitter_x"/>
 
         <TextView
             android:layout_width="0dp"
