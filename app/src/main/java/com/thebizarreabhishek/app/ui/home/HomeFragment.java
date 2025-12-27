@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
         loadCustomPrompt();
         loadNaturalDelayStatus();
         loadPlatforms();
+        loadBlockedContacts();
     }
 
     private void loadNaturalDelayStatus() {
@@ -78,6 +79,89 @@ public class HomeFragment extends Fragment {
         platformSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.edit().putBoolean(prefKey, isChecked).apply();
         });
+    }
+
+    private void loadBlockedContacts() {
+        binding.cardBlockedContacts.setOnClickListener(v -> showBlockedContactsPopup());
+    }
+
+    private void showBlockedContactsPopup() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_blocked_contacts, null);
+        builder.setView(dialogView);
+
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+        
+        // Get blocked contacts list
+        java.util.Set<String> blockedSet = prefs.getStringSet("blocked_contacts", new java.util.HashSet<>());
+        java.util.ArrayList<String> blockedList = new java.util.ArrayList<>(blockedSet);
+        
+        android.widget.EditText etContact = dialogView.findViewById(R.id.et_blocked_contact);
+        android.widget.Button btnAdd = dialogView.findViewById(R.id.btn_add_blocked);
+        android.widget.TextView tvNoBlocked = dialogView.findViewById(R.id.tv_no_blocked);
+        android.widget.LinearLayout listContainer = new android.widget.LinearLayout(requireContext());
+        listContainer.setOrientation(android.widget.LinearLayout.VERTICAL);
+        
+        // Replace RecyclerView with simple LinearLayout for blocked items
+        android.widget.LinearLayout parentLayout = (android.widget.LinearLayout) dialogView;
+        parentLayout.removeView(dialogView.findViewById(R.id.rv_blocked_contacts));
+        parentLayout.addView(listContainer);
+        
+        // Update UI based on blocked list
+        Runnable updateList = () -> {
+            listContainer.removeAllViews();
+            if (blockedList.isEmpty()) {
+                tvNoBlocked.setVisibility(View.VISIBLE);
+            } else {
+                tvNoBlocked.setVisibility(View.GONE);
+                for (String contact : blockedList) {
+                    android.widget.LinearLayout itemLayout = new android.widget.LinearLayout(requireContext());
+                    itemLayout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+                    itemLayout.setPadding(0, 16, 0, 16);
+                    itemLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                    
+                    android.widget.TextView tvName = new android.widget.TextView(requireContext());
+                    tvName.setText(contact);
+                    tvName.setTextColor(getResources().getColor(R.color.white, null));
+                    tvName.setTextSize(15);
+                    android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(
+                            0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+                    tvName.setLayoutParams(params);
+                    
+                    android.widget.TextView btnRemove = new android.widget.TextView(requireContext());
+                    btnRemove.setText("Remove");
+                    btnRemove.setTextColor(getResources().getColor(R.color.error, null));
+                    btnRemove.setTextSize(14);
+                    btnRemove.setOnClickListener(x -> {
+                        blockedList.remove(contact);
+                        prefs.edit().putStringSet("blocked_contacts", new java.util.HashSet<>(blockedList)).apply();
+                        updateList.run();
+                    });
+                    
+                    itemLayout.addView(tvName);
+                    itemLayout.addView(btnRemove);
+                    listContainer.addView(itemLayout);
+                }
+            }
+        };
+        updateList.run();
+        
+        btnAdd.setOnClickListener(v -> {
+            String name = etContact.getText().toString().trim();
+            if (!name.isEmpty() && !blockedList.contains(name)) {
+                blockedList.add(name);
+                prefs.edit().putStringSet("blocked_contacts", new java.util.HashSet<>(blockedList)).apply();
+                etContact.setText("");
+                updateList.run();
+            }
+        });
+
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        dialog.show();
     }
 
     private void loadCustomPrompt() {
