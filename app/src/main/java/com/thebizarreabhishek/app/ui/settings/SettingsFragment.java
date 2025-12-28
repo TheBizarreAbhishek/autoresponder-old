@@ -109,6 +109,8 @@ public class SettingsFragment extends Fragment {
                 .show();
     }
 
+    private boolean isUpdatingToggles = false;
+
     private void setupAIEngine() {
         // Enable AI Switch
         boolean isAiEnabled = prefs.getBoolean("is_ai_reply_enabled", false);
@@ -120,10 +122,14 @@ public class SettingsFragment extends Fragment {
         
         // Mutually exclusive: AI Reply ON -> Smart Reply OFF
         binding.switchAiReply.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isUpdatingToggles) return;
+            
             prefs.edit().putBoolean("is_ai_reply_enabled", isChecked).apply();
             if (isChecked) {
+                isUpdatingToggles = true;
                 binding.switchSmartReply.setChecked(false);
                 prefs.edit().putBoolean("is_smart_reply_enabled", false).apply();
+                isUpdatingToggles = false;
                 
                 if (prefs.getString("api_key", "").isEmpty()) {
                     android.widget.Toast
@@ -135,10 +141,14 @@ public class SettingsFragment extends Fragment {
         
         // Mutually exclusive: Smart Reply ON -> AI Reply OFF
         binding.switchSmartReply.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isUpdatingToggles) return;
+            
             prefs.edit().putBoolean("is_smart_reply_enabled", isChecked).apply();
             if (isChecked) {
+                isUpdatingToggles = true;
                 binding.switchAiReply.setChecked(false);
                 prefs.edit().putBoolean("is_ai_reply_enabled", false).apply();
+                isUpdatingToggles = false;
             }
         });
 
