@@ -23,7 +23,9 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,7 +33,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="2dp"
-            android:paddingBottom="80dp">
+            android:paddingBottom="12dp">
 
             <!-- Service Status Card -->
             <androidx.cardview.widget.CardView
