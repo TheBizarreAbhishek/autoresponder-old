@@ -5,9 +5,9 @@
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Home" />
     <item
-        android:id="@+id/navigation_automations"
-        android:icon="@drawable/ic_apps"
-        android:title="Platform" />
+        android:id="@+id/navigation_smart_reply"
+        android:icon="@drawable/ic_reply"
+        android:title="Smart Reply" />
     <item
         android:id="@+id/navigation_logs"
         android:icon="@drawable/ic_history_black_24dp"

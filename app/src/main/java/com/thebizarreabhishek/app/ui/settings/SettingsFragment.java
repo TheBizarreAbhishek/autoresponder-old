@@ -113,12 +113,32 @@ public class SettingsFragment extends Fragment {
         // Enable AI Switch
         boolean isAiEnabled = prefs.getBoolean("is_ai_reply_enabled", false);
         binding.switchAiReply.setChecked(isAiEnabled);
+        
+        // Enable Smart Reply Switch
+        boolean isSmartReplyEnabled = prefs.getBoolean("is_smart_reply_enabled", false);
+        binding.switchSmartReply.setChecked(isSmartReplyEnabled);
+        
+        // Mutually exclusive: AI Reply ON -> Smart Reply OFF
         binding.switchAiReply.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.edit().putBoolean("is_ai_reply_enabled", isChecked).apply();
-            if (isChecked && prefs.getString("api_key", "").isEmpty()) {
-                android.widget.Toast
-                        .makeText(requireContext(), "Please set your API Key first", android.widget.Toast.LENGTH_LONG)
-                        .show();
+            if (isChecked) {
+                binding.switchSmartReply.setChecked(false);
+                prefs.edit().putBoolean("is_smart_reply_enabled", false).apply();
+                
+                if (prefs.getString("api_key", "").isEmpty()) {
+                    android.widget.Toast
+                            .makeText(requireContext(), "Please set your API Key first", android.widget.Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+        });
+        
+        // Mutually exclusive: Smart Reply ON -> AI Reply OFF
+        binding.switchSmartReply.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean("is_smart_reply_enabled", isChecked).apply();
+            if (isChecked) {
+                binding.switchAiReply.setChecked(false);
+                prefs.edit().putBoolean("is_ai_reply_enabled", false).apply();
             }
         });
 

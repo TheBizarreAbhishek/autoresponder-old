@@ -252,4 +252,110 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return contacts;
     }
+
+    // ==================== SMART REPLIES ====================
+
+    public static final String TABLE_SMART_REPLIES = "smart_replies";
+    public static final String SR_COLUMN_ID = "_id";
+    public static final String SR_COLUMN_TRIGGER = "trigger_text";
+    public static final String SR_COLUMN_RESPONSE = "response_text";
+    public static final String SR_COLUMN_ENABLED = "enabled";
+
+    public void createSmartRepliesTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String createTable = "CREATE TABLE IF NOT EXISTS " + TABLE_SMART_REPLIES + " (" +
+                SR_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                SR_COLUMN_TRIGGER + " TEXT, " +
+                SR_COLUMN_RESPONSE + " TEXT, " +
+                SR_COLUMN_ENABLED + " INTEGER DEFAULT 1" +
+                ");";
+        db.execSQL(createTable);
+        db.close();
+    }
+
+    public void insertSmartReply(String trigger, String response) {
+        createSmartRepliesTable();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SR_COLUMN_TRIGGER, trigger);
+        values.put(SR_COLUMN_RESPONSE, response);
+        values.put(SR_COLUMN_ENABLED, 1);
+        db.insert(TABLE_SMART_REPLIES, null, values);
+        db.close();
+    }
+
+    public List<com.thebizarreabhishek.app.models.SmartReply> getAllSmartReplies() {
+        createSmartRepliesTable();
+        List<com.thebizarreabhishek.app.models.SmartReply> replies = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_SMART_REPLIES, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(SR_COLUMN_ID));
+                    String trigger = cursor.getString(cursor.getColumnIndexOrThrow(SR_COLUMN_TRIGGER));
+                    String response = cursor.getString(cursor.getColumnIndexOrThrow(SR_COLUMN_RESPONSE));
+                    boolean enabled = cursor.getInt(cursor.getColumnIndexOrThrow(SR_COLUMN_ENABLED)) == 1;
+
+                    replies.add(new com.thebizarreabhishek.app.models.SmartReply(id, trigger, response, enabled));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "getAllSmartReplies: ", e);
+        } finally {
+            if (cursor != null) cursor.close();
+            if (db != null && db.isOpen()) db.close();
+        }
+        return replies;
+    }
+
+    public void updateSmartReply(int id, String trigger, String response, boolean enabled) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SR_COLUMN_TRIGGER, trigger);
+        values.put(SR_COLUMN_RESPONSE, response);
+        values.put(SR_COLUMN_ENABLED, enabled ? 1 : 0);
+        db.update(TABLE_SMART_REPLIES, values, SR_COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    public void deleteSmartReply(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_SMART_REPLIES, SR_COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    public String findMatchingSmartReply(String incomingMessage) {
+        createSmartRepliesTable();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        String response = null;
+
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_SMART_REPLIES + " WHERE " + SR_COLUMN_ENABLED + " = 1", null);
+
+            if (cursor.moveToFirst()) {
+                String lowerMessage = incomingMessage.toLowerCase().trim();
+                do {
+                    String trigger = cursor.getString(cursor.getColumnIndexOrThrow(SR_COLUMN_TRIGGER));
+                    if (trigger != null && lowerMessage.contains(trigger.toLowerCase().trim())) {
+                        response = cursor.getString(cursor.getColumnIndexOrThrow(SR_COLUMN_RESPONSE));
+                        break;
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "findMatchingSmartReply: ", e);
+        } finally {
+            if (cursor != null) cursor.close();
+            if (db != null && db.isOpen()) db.close();
+        }
+        return response;
+    }
 }
+

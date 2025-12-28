@@ -179,6 +179,26 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 // Here is validating sender's message. Not whatsapp checking for messages
                 if (action.getRemoteInputs() != null && action.getRemoteInputs().length > 0) {
 
+                    // Check Smart Reply first
+                    boolean isSmartReplyEnabled = sharedPreferences.getBoolean("is_smart_reply_enabled", false);
+                    if (isSmartReplyEnabled) {
+                        com.thebizarreabhishek.app.helpers.DatabaseHelper dbHelper = 
+                            new com.thebizarreabhishek.app.helpers.DatabaseHelper(this);
+                        String smartResponse = dbHelper.findMatchingSmartReply(message);
+                        if (smartResponse != null) {
+                            Log.d(TAG, "processAutoReply: Smart Reply match found");
+                            finalizeAndSend(action, sender, message, smartResponse, messageId, platform);
+                            return;
+                        }
+                    }
+
+                    // If Smart Reply is enabled but no match, don't reply
+                    if (isSmartReplyEnabled) {
+                        Log.d(TAG, "processAutoReply: Smart Reply enabled but no match found");
+                        return;
+                    }
+
+                    // Check AI Reply
                     boolean aiConfigured = isAIConfigured();
                     Log.d(TAG, "processAutoReply: isAIConfigured=" + aiConfigured);
                     if (aiConfigured) {
@@ -206,9 +226,13 @@ public class MyNotificationListenerService extends NotificationListenerService {
                         }
 
                     } else {
-                        String defaultReply = sharedPreferences.getString("default_reply_message",
-                                getString(R.string.default_bot_message));
-                        finalizeAndSend(action, sender, message, defaultReply, messageId, platform);
+                        // Default message only works with AI Reply enabled
+                        boolean isAiReplyEnabled = sharedPreferences.getBoolean("is_ai_reply_enabled", false);
+                        if (isAiReplyEnabled) {
+                            String defaultReply = sharedPreferences.getString("default_reply_message",
+                                    getString(R.string.default_bot_message));
+                            finalizeAndSend(action, sender, message, defaultReply, messageId, platform);
+                        }
                     }
 
                     break;

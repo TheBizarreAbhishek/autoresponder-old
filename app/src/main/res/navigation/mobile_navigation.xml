@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_automations"
-        android:name="com.thebizarreabhishek.app.ui.automations.AutomationsFragment"
-        android:label="Automations"
-        tools:layout="@layout/fragment_automations" />
+        android:id="@+id/navigation_smart_reply"
+        android:name="com.thebizarreabhishek.app.ui.smartreply.SmartReplyFragment"
+        android:label="Smart Reply"
+        tools:layout="@layout/fragment_smart_reply" />
 
     <fragment
         android:id="@+id/navigation_logs"
