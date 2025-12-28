@@ -181,20 +181,26 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                     // Check Smart Reply first
                     boolean isSmartReplyEnabled = sharedPreferences.getBoolean("is_smart_reply_enabled", false);
+                    Log.d(TAG, "processAutoReply: isSmartReplyEnabled=" + isSmartReplyEnabled + ", message=" + message);
+                    
                     if (isSmartReplyEnabled) {
                         com.thebizarreabhishek.app.helpers.DatabaseHelper dbHelper = 
                             new com.thebizarreabhishek.app.helpers.DatabaseHelper(this);
                         String smartResponse = dbHelper.findMatchingSmartReply(message);
+                        Log.d(TAG, "processAutoReply: smartResponse=" + smartResponse);
+                        
                         if (smartResponse != null) {
-                            Log.d(TAG, "processAutoReply: Smart Reply match found");
+                            Log.d(TAG, "processAutoReply: Smart Reply match found! Sending: " + smartResponse);
                             finalizeAndSend(action, sender, message, smartResponse, messageId, platform);
                             return;
+                        } else {
+                            Log.d(TAG, "processAutoReply: No Smart Reply match found for message: " + message);
                         }
                     }
 
                     // If Smart Reply is enabled but no match, don't reply
                     if (isSmartReplyEnabled) {
-                        Log.d(TAG, "processAutoReply: Smart Reply enabled but no match found");
+                        Log.d(TAG, "processAutoReply: Smart Reply enabled but no match found, skipping");
                         return;
                     }
 

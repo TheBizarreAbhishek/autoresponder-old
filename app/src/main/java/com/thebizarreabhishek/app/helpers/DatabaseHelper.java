@@ -339,12 +339,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db = this.getReadableDatabase();
             cursor = db.rawQuery("SELECT * FROM " + TABLE_SMART_REPLIES + " WHERE " + SR_COLUMN_ENABLED + " = 1", null);
 
+            Log.d(TAG, "findMatchingSmartReply: Checking message='" + incomingMessage + "', count=" + cursor.getCount());
+
             if (cursor.moveToFirst()) {
                 String lowerMessage = incomingMessage.toLowerCase().trim();
                 do {
                     String trigger = cursor.getString(cursor.getColumnIndexOrThrow(SR_COLUMN_TRIGGER));
-                    if (trigger != null && lowerMessage.contains(trigger.toLowerCase().trim())) {
+                    String triggerLower = trigger != null ? trigger.toLowerCase().trim() : "";
+                    boolean matches = lowerMessage.contains(triggerLower);
+                    Log.d(TAG, "findMatchingSmartReply: trigger='" + trigger + "', matches=" + matches);
+                    
+                    if (trigger != null && matches) {
                         response = cursor.getString(cursor.getColumnIndexOrThrow(SR_COLUMN_RESPONSE));
+                        Log.d(TAG, "findMatchingSmartReply: MATCH FOUND! response='" + response + "'");
                         break;
                     }
                 } while (cursor.moveToNext());
