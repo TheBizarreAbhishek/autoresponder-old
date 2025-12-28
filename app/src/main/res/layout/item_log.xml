@@ -17,13 +17,23 @@
         android:background="@drawable/chip_background"
         android:padding="16dp">
 
+        <!-- Platform Icon -->
+        <ImageView
+            android:id="@+id/iv_platform"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_whatsapp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <!-- Avatar -->
         <FrameLayout
             android:id="@+id/avatar_container"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/circle_background"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_platform"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -43,7 +53,7 @@
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:text="Alice"
             android:textColor="@color/white"

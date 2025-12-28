@@ -19,20 +19,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "MADARA";
     private static final String DATABASE_NAME = "whatsappMessages.db";
-    private static final int DATABASE_VERSION = 1; // Increment version for schema change
+    private static final int DATABASE_VERSION = 2; // Updated for platform column
     public static final String TABLE_MESSAGES = "messages";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_SENDER = "sender";
     public static final String COLUMN_MESSAGE = "message";
     public static final String COLUMN_TIMESTAMP = "timestamp";
     public static final String COLUMN_REPLY = "reply";
+    public static final String COLUMN_PLATFORM = "platform";
 
     private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_MESSAGES + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_SENDER + " TEXT, " +
             COLUMN_MESSAGE + " TEXT, " +
             COLUMN_TIMESTAMP + " TEXT, " +
-            COLUMN_REPLY + " TEXT" +
+            COLUMN_REPLY + " TEXT, " +
+            COLUMN_PLATFORM + " TEXT" +
             ");";
 
     public DatabaseHelper(Context context) {
@@ -46,23 +48,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // if (oldVersion < 2) {
-        // db.execSQL("ALTER TABLE " + TABLE_MESSAGES + " ADD COLUMN " + COLUMN_REPLY +
-        // " TEXT;");
-        // }
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
         onCreate(db);
     }
 
     // ----------------------------------------------------------------------------------------------
 
-    public void insertMessage(String sender, String message, String timestamp, String reply) {
+    public void insertMessage(String sender, String message, String timestamp, String reply, String platform) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_SENDER, sender);
         values.put(COLUMN_MESSAGE, message);
         values.put(COLUMN_TIMESTAMP, timestamp);
         values.put(COLUMN_REPLY, reply);
+        values.put(COLUMN_PLATFORM, platform);
         db.insert(TABLE_MESSAGES, null, values);
         db.close();
     }
@@ -77,7 +76,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] whereArgs = { currentDate + " 00:00:00" };
             db.delete(TABLE_MESSAGES, whereClause, whereArgs);
         } catch (Exception e) {
-            // Log the exception
             Log.e("DatabaseHelper", "Error deleting old messages", e);
         } finally {
             if (db != null && db.isOpen()) {
@@ -92,9 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         try {
-            // Ensure the database is opened
             db = this.getReadableDatabase();
-
             String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
                     "ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 7";
             cursor = db.rawQuery(query, new String[] { sender });
@@ -105,20 +101,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
                     String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
                     String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
+                    String platform = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PLATFORM));
 
-                    Message msg = new Message(id, sender, message, timestamp, reply);
+                    Message msg = new Message(id, sender, message, timestamp, reply, platform);
                     messages.add(msg);
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
-            Log.e(TAG, "getLast5MessagesBySender: ", e);
+            Log.e(TAG, "getChatHistoryBySender: ", e);
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
+            if (cursor != null) cursor.close();
+            if (db != null && db.isOpen()) db.close();
         }
 
         return messages;
@@ -130,9 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         try {
-            // Ensure the database is opened
             db = this.getReadableDatabase();
-
             String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
                     "ORDER BY " + COLUMN_TIMESTAMP + " DESC";
             cursor = db.rawQuery(query, new String[] { sender });
@@ -143,20 +134,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
                     String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
                     String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
+                    String platform = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PLATFORM));
 
-                    Message msg = new Message(id, sender, message, timestamp, reply);
+                    Message msg = new Message(id, sender, message, timestamp, reply, platform);
                     messages.add(msg);
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
-            Log.e(TAG, "getLast5MessagesBySender: ", e);
+            Log.e(TAG, "getAllMessagesBySender: ", e);
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
+            if (cursor != null) cursor.close();
+            if (db != null && db.isOpen()) db.close();
         }
 
         return messages;
@@ -179,18 +167,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
                     String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
                     String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
+                    String platform = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PLATFORM));
 
-                    Message msg = new Message(id, sender, message, timestamp, reply);
+                    Message msg = new Message(id, sender, message, timestamp, reply, platform);
                     messages.add(msg);
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
             Log.e(TAG, "getAllMessages: ", e);
         } finally {
-            if (cursor != null)
-                cursor.close();
-            if (db != null && db.isOpen())
-                db.close();
+            if (cursor != null) cursor.close();
+            if (db != null && db.isOpen()) db.close();
         }
         return messages;
     }
@@ -220,8 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.e(TAG, "getTotalWordsCount: ", e);
         } finally {
-            if (cursor != null)
-                cursor.close();
+            if (cursor != null) cursor.close();
             db.close();
         }
         return totalWords;
@@ -234,11 +220,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             db = this.getReadableDatabase();
-            // Get unique senders with their latest message, timestamp, and message count
+            // Get unique senders with their latest message, timestamp, message count, and platform
             String query = "SELECT " + COLUMN_SENDER + ", " +
                     "(SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES + " m2 WHERE m2." + COLUMN_SENDER + " = m1." + COLUMN_SENDER + " ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 1) as lastMessage, " +
                     "MAX(" + COLUMN_TIMESTAMP + ") as lastTimestamp, " +
-                    "COUNT(*) as messageCount " +
+                    "COUNT(*) as messageCount, " +
+                    "(SELECT " + COLUMN_PLATFORM + " FROM " + TABLE_MESSAGES + " m3 WHERE m3." + COLUMN_SENDER + " = m1." + COLUMN_SENDER + " ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 1) as platform " +
                     "FROM " + TABLE_MESSAGES + " m1 " +
                     "GROUP BY " + COLUMN_SENDER + " " +
                     "ORDER BY lastTimestamp DESC";
@@ -250,19 +237,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String lastMessage = cursor.getString(1);
                     String lastTimestamp = cursor.getString(2);
                     int messageCount = cursor.getInt(3);
+                    String platform = cursor.getString(4);
 
                     com.thebizarreabhishek.app.models.ContactSummary contact = 
-                        new com.thebizarreabhishek.app.models.ContactSummary(senderName, lastMessage, lastTimestamp, messageCount);
+                        new com.thebizarreabhishek.app.models.ContactSummary(senderName, lastMessage, lastTimestamp, messageCount, platform);
                     contacts.add(contact);
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
             Log.e(TAG, "getUniqueSenders: ", e);
         } finally {
-            if (cursor != null)
-                cursor.close();
-            if (db != null && db.isOpen())
-                db.close();
+            if (cursor != null) cursor.close();
+            if (db != null && db.isOpen()) db.close();
         }
         return contacts;
     }

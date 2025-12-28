@@ -43,6 +43,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
         String packageName = statusBarNotification.getPackageName();
         Log.d(TAG, "onNotificationPosted: packageName=" + packageName);
         boolean isSupported = false;
+        String platform = getPlatformName(packageName);
 
         if (packageName.equalsIgnoreCase("com.whatsapp") && sharedPreferences.getBoolean("is_whatsapp_enabled", true))
             isSupported = true;
@@ -94,6 +95,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                     int maxReply = Integer.parseInt(sharedPreferences.getString("max_reply", "100"));
 
+                    final String finalPlatform = platform;
                     messageHandler.getAllMessagesBySender(title, messages -> {
 
                         if (messages != null && messages.size() < maxReply) {
@@ -101,10 +103,10 @@ public class MyNotificationListenerService extends NotificationListenerService {
                             boolean groupReplyEnabled = sharedPreferences.getBoolean("is_group_reply_enabled", false);
 
                             if (groupReplyEnabled) {
-                                processAutoReply(statusBarNotification, title, senderMessage, messageId);
+                                processAutoReply(statusBarNotification, title, senderMessage, messageId, finalPlatform);
                             } else {
                                 if (!isGroupMessage(title)) {
-                                    processAutoReply(statusBarNotification, title, senderMessage, messageId);
+                                    processAutoReply(statusBarNotification, title, senderMessage, messageId, finalPlatform);
                                 }
                             }
                         }
@@ -112,8 +114,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 }
             }
 
-            // Clear the set if it reaches size 50 for ram memory free // but no necessary
-            // currently
+            // Clear the set if it reaches size 50 for ram memory free
             if (respondedMessages.size() > 50) {
                 respondedMessages.clear();
             }
@@ -122,8 +123,29 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
     // ----------------------------------------------------------------------------------------------
 
+    private String getPlatformName(String packageName) {
+        switch (packageName) {
+            case "com.whatsapp":
+                return "whatsapp";
+            case "com.whatsapp.w4b":
+                return "whatsapp_business";
+            case "org.telegram.messenger":
+                return "telegram";
+            case "com.instagram.android":
+                return "instagram";
+            case "com.snapchat.android":
+                return "snapchat";
+            case "com.twitter.android":
+                return "twitter";
+            default:
+                return "unknown";
+        }
+    }
+
+    // ----------------------------------------------------------------------------------------------
+
     private void finalizeAndSend(Notification.Action action, String sender, String incomingMessage,
-            String replyMessageRaw, String messageId) {
+            String replyMessageRaw, String messageId, String platform) {
         String replyPrefix = sharedPreferences
                 .getString("reply_prefix_message", getString(R.string.default_reply_prefix)).trim();
         String botReplyMessage = (replyPrefix + " " + replyMessageRaw).trim();
@@ -139,14 +161,14 @@ public class MyNotificationListenerService extends NotificationListenerService {
         }
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            messageHandler.handleIncomingMessage(sender, incomingMessage, botReplyWithoutPrefix);
+            messageHandler.handleIncomingMessage(sender, incomingMessage, botReplyWithoutPrefix, platform);
             send(action, botReplyMessage);
             new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
         }, delay);
     }
 
     private void processAutoReply(StatusBarNotification statusBarNotification, String sender, String message,
-            String messageId) {
+            String messageId, String platform) {
 
         Notification.Action[] actions = statusBarNotification.getNotification().actions;
 
@@ -168,25 +190,25 @@ public class MyNotificationListenerService extends NotificationListenerService {
                             ChatGPTReplyGenerator chatGPTReplyGenerator = new ChatGPTReplyGenerator(this,
                                     sharedPreferences, messageHandler);
                             chatGPTReplyGenerator.generateReply(sender, message,
-                                    reply -> finalizeAndSend(action, sender, message, reply, messageId));
+                                    reply -> finalizeAndSend(action, sender, message, reply, messageId, platform));
 
                         } else if (llmModel.startsWith("custom")) {
                             CustomReplyGenerator customReplyGenerator = new CustomReplyGenerator(this,
                                     sharedPreferences, messageHandler);
                             customReplyGenerator.generateReply(sender, message,
-                                    reply -> finalizeAndSend(action, sender, message, reply, messageId));
+                                    reply -> finalizeAndSend(action, sender, message, reply, messageId, platform));
 
                         } else if (llmModel.startsWith("gemini")) {
                             GeminiReplyGenerator geminiReplyGenerator = new GeminiReplyGenerator(this,
                                     sharedPreferences, messageHandler);
                             geminiReplyGenerator.generateReply(sender, message,
-                                    reply -> finalizeAndSend(action, sender, message, reply, messageId));
+                                    reply -> finalizeAndSend(action, sender, message, reply, messageId, platform));
                         }
 
                     } else {
                         String defaultReply = sharedPreferences.getString("default_reply_message",
                                 getString(R.string.default_bot_message));
-                        finalizeAndSend(action, sender, message, defaultReply, messageId);
+                        finalizeAndSend(action, sender, message, defaultReply, messageId, platform);
                     }
 
                     break;

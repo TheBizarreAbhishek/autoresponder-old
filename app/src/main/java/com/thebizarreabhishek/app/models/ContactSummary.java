@@ -5,12 +5,14 @@ public class ContactSummary {
     private String lastMessage;
     private String lastTimestamp;
     private int messageCount;
+    private String platform;
 
-    public ContactSummary(String senderName, String lastMessage, String lastTimestamp, int messageCount) {
+    public ContactSummary(String senderName, String lastMessage, String lastTimestamp, int messageCount, String platform) {
         this.senderName = senderName;
         this.lastMessage = lastMessage;
         this.lastTimestamp = lastTimestamp;
         this.messageCount = messageCount;
+        this.platform = platform;
     }
 
     public String getSenderName() {
@@ -27,5 +29,9 @@ public class ContactSummary {
 
     public int getMessageCount() {
         return messageCount;
+    }
+
+    public String getPlatform() {
+        return platform;
     }
 }

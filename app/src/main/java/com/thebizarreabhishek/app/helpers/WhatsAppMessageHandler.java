@@ -19,15 +19,16 @@ public class WhatsAppMessageHandler {
         dbHelper = new DatabaseHelper(context);
     }
 
-//    ----------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------
 
-    public void handleIncomingMessage(String sender, String message, String reply) {
-        @SuppressLint("SimpleDateFormat") String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        dbHelper.insertMessage(sender, message, timestamp, reply);
-        dbHelper.deleteOldMessages(); // Clean up old messages
+    public void handleIncomingMessage(String sender, String message, String reply, String platform) {
+        @SuppressLint("SimpleDateFormat") 
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        dbHelper.insertMessage(sender, message, timestamp, reply, platform);
+        dbHelper.deleteOldMessages();
     }
 
-//    ----------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------
 
     public void getMessagesHistory(String sender, OnMessagesRetrievedListener listener) {
         new Thread(() -> {

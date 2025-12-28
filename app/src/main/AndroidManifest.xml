@@ -30,6 +30,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activities.ContactMessagesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WhatsAppReplyBot" />
+
         <service
             android:name=".services.MyNotificationListenerService"
             android:exported="true"

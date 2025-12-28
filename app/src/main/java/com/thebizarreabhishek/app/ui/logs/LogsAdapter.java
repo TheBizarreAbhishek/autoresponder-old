@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.thebizarreabhishek.app.R;
 import com.thebizarreabhishek.app.databinding.ItemLogBinding;
 import com.thebizarreabhishek.app.models.ContactSummary;
 import java.util.ArrayList;
@@ -71,12 +72,36 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ContactViewHol
                 binding.tvAvatar.setText("?");
             }
 
+            // Set platform icon
+            binding.ivPlatform.setImageResource(getPlatformIcon(contact.getPlatform()));
+
             // Click listener
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onContactClick(contact);
                 }
             });
+        }
+
+        private int getPlatformIcon(String platform) {
+            if (platform == null) return R.drawable.ic_smart_toy_black_24dp;
+            
+            switch (platform) {
+                case "whatsapp":
+                    return R.drawable.ic_whatsapp;
+                case "whatsapp_business":
+                    return R.drawable.ic_whatsapp_business;
+                case "telegram":
+                    return R.drawable.ic_telegram;
+                case "instagram":
+                    return R.drawable.ic_instagram;
+                case "snapchat":
+                    return R.drawable.ic_snapchat;
+                case "twitter":
+                    return R.drawable.ic_twitter_x;
+                default:
+                    return R.drawable.ic_smart_toy_black_24dp;
+            }
         }
     }
 }
