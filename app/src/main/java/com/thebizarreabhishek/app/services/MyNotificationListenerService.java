@@ -124,55 +124,23 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
     private void finalizeAndSend(Notification.Action action, String sender, String incomingMessage,
             String replyMessageRaw, String messageId) {
-        
-        long delay = 0;
-        String finalMessage = replyMessageRaw;
-
-        // Try to parse AI-provided delay (Format: "3500|Message")
-        if (replyMessageRaw.contains("|")) {
-            try {
-                int pipeIndex = replyMessageRaw.indexOf("|");
-                String delayPart = replyMessageRaw.substring(0, pipeIndex);
-                // Verify if strict digits
-                if (delayPart.matches("\\d+")) {
-                    delay = Long.parseLong(delayPart);
-                    finalMessage = replyMessageRaw.substring(pipeIndex + 1);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "finalizeAndSend: Failed to parse AI delay", e);
-            }
-        }
-
         String replyPrefix = sharedPreferences
                 .getString("reply_prefix_message", getString(R.string.default_reply_prefix)).trim();
-        String botReplyMessage = (replyPrefix + " " + finalMessage).trim();
+        String botReplyMessage = (replyPrefix + " " + replyMessageRaw).trim();
         String botReplyWithoutPrefix = botReplyMessage.replace(replyPrefix, "").trim();
 
-        // Fallback: If AI didn't provide a delay (custom prompts might override system instructions)
-        // or if "Natural Delay" is enabled in settings, we enforce a minimum situational delay.
+        long delay = 0;
         if (sharedPreferences.getBoolean("is_natural_delay_enabled", false)) {
-             if (delay == 0) {
-                 // Fallback Algorithm: Reaction Time (1.5-3s) + Typing Time (100-150ms/char)
-                 long reactionTime = 1500 + new java.util.Random().nextInt(1500); 
-                 long typingTime = botReplyWithoutPrefix.length() * (100L + new java.util.Random().nextInt(50));
-                 delay = reactionTime + typingTime;
-             }
-        } else {
-            // If natural delay is DISABLED, we might still respect AI's wish if it was explicitly instructed, 
-            // OR we force 0. Let's force 0 if user disabled it to give them control.
-            // UNLESS the user explicitly wants AI to control it. 
-            // Current assumption: "Natural Delay" switch enables this feature.
-            delay = 0;
+            // Natural Delay Algorithm: Reaction Time (1.5-3s) + Typing Time (100-150ms/char)
+            long reactionTime = 1500 + new java.util.Random().nextInt(1500);
+            long typingTime = botReplyWithoutPrefix.length() * (100L + new java.util.Random().nextInt(50));
+            delay = reactionTime + typingTime;
+            Log.d(TAG, "finalizeAndSend: Natural Delay=" + delay + "ms (Reaction=" + reactionTime + ", Typing=" + typingTime + ")");
         }
 
-        Log.d(TAG, "finalizeAndSend: Final Delay=" + delay + "ms, Message=" + botReplyWithoutPrefix);
-
-        final String finalReplyToSend = botReplyMessage;
-        final String finalReplyLog = botReplyWithoutPrefix;
-
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            messageHandler.handleIncomingMessage(sender, incomingMessage, finalReplyLog);
-            send(action, finalReplyToSend);
+            messageHandler.handleIncomingMessage(sender, incomingMessage, botReplyWithoutPrefix);
+            send(action, botReplyMessage);
             new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
         }, delay);
     }
