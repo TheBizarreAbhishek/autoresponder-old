@@ -77,7 +77,7 @@ public class ChatGPTReplyGenerator {
 
                     String systemInstruction;
                     if (customPrompt != null && !customPrompt.isEmpty()) {
-                        systemInstruction = customPrompt + "\n\nMake sure to reply in " + aiReplyLanguage + ".";
+                        systemInstruction = customPrompt + "\n\nMake sure to reply in " + aiReplyLanguage + ".\nIMPORTANT: Start every response with a calculated delay in milliseconds (simulating human reading/thinking/typing), followed by a '|'. Example: '4200|Yes, I agree'.";
                     } else {
                         String languageInstruction = "Reply in " + aiReplyLanguage + ".";
                         if (aiReplyLanguage.equalsIgnoreCase("Hinglish")) {
@@ -93,7 +93,8 @@ public class ChatGPTReplyGenerator {
                                 "- " + languageInstruction + "\n" +
                                 "- Keep replies concise and natural for a chat context. Reply within 1 or 2 sentences whenever possible.\n"
                                 +
-                                "- Be polite, context-aware, and ensure your replies are relevant to the conversation.";
+                                "- Be polite, context-aware, and ensure your replies are relevant to the conversation.\n" +
+                                "- START every response with a calculated delay (in ms) based on message complexity and length (reading+thinking+typing time), followed by a '|'. Example: '3500|Hello there'.";
                     }
 
                     systemRole.put("role", "system");

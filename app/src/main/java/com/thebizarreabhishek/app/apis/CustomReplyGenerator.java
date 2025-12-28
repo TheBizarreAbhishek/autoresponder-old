@@ -136,7 +136,8 @@ public class CustomReplyGenerator {
         prompt.append("- ").append(languageInstruction).append("\n");
         prompt.append(
                 "- You are a WhatsApp auto-reply bot. Your task is to reply to the incoming message. Response only the chat and do not add any other text. ");
-        prompt.append("Be polite, context-aware, and ensure your replies are relevant to the conversation.\n\n");
+        prompt.append("Be polite, context-aware, and ensure your replies are relevant to the conversation.\n");
+        prompt.append("- START every response with a calculated delay (in ms) simulating human reading+thinking+typing time, followed by a '|'. Example: '3500|Hello there'.\n\n");
 
         if (chatHistory.toString().isEmpty()) {
             prompt.append("Most recent message (from ");

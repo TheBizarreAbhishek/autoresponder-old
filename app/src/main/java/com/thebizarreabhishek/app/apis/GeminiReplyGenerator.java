@@ -94,14 +94,15 @@ public class GeminiReplyGenerator {
 
         if (customPrompt != null && !customPrompt.isEmpty()) {
             prompt.append(customPrompt);
-            prompt.append("\n\nMake sure to reply in ").append(aiReplyLanguage).append(".");
+            prompt.append("\n\nMake sure to reply in ").append(aiReplyLanguage).append(".\n");
+            prompt.append("IMPORTANT: Start every response with a calculated delay in milliseconds (simulating human reading/thinking/typing), followed by a '|'. Example: '4200|Yes, I agree'.");
         } else {
             String languageInstruction = "Reply in " + aiReplyLanguage + ".";
             if (aiReplyLanguage.equalsIgnoreCase("Hinglish")) {
                 languageInstruction = "Reply in Hinglish (a casual blend of Hindi and English using Roman script). Example: 'Haan main thik hu, tum batao?'.";
             }
 
-            prompt.append("IMPORTANT SYSTEM INSTRUCTIONS:\n");
+                    prompt.append("IMPORTANT SYSTEM INSTRUCTIONS:\n");
             prompt.append("- Your name is ").append(botName).append(".\n");
             prompt.append(
                     "- You are a WhatsApp auto-reply bot who pretends to be human and doesn't disclose that you are a bot.\n");
@@ -112,6 +113,7 @@ public class GeminiReplyGenerator {
             prompt.append(
                     "- Keep replies concise and natural for a chat context. Reply within 1 or 2 sentences whenever possible.\n");
             prompt.append("- Be polite, context-aware, and ensure your replies are relevant to the conversation.\n");
+            prompt.append("- START every response with a calculated delay (in ms) simulating human reading+thinking+typing time, followed by a '|'. Example: '3500|Hello there'.\n");
         }
 
         if (!chatHistory.toString().isEmpty()) {
